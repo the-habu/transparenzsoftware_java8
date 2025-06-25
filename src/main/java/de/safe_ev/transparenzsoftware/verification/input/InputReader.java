@@ -16,6 +16,13 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import javax.xml.transform.sax.SAXSource;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 /**
  * Reads in our defined input data
  */
@@ -71,8 +78,20 @@ public class InputReader {
      */
     public Values readString(String data) throws InvalidInputException {
         try {
-            StringReader stringReader = new StringReader(data);
-            Values value = (Values) unmarshaller.unmarshal(stringReader);
+            // Create a parser that avoids secure-processing (Android's SAX impl can't handle it)
+            SAXParserFactory spf = SAXParserFactory.newInstance();
+            
+            try {
+                spf.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, false);
+            } catch (Exception ignored) {
+                // Ignore if not supported (like on Android)
+            }
+
+            XMLReader xmlReader = spf.newSAXParser().getXMLReader();
+            InputSource inputSource = new InputSource(new StringReader(data));
+            SAXSource saxSource = new SAXSource(xmlReader, inputSource);
+
+            Values value = (Values) unmarshaller.unmarshal(saxSource);
             value.setRawContent(data);
             return value;
         } catch (Exception e) {
