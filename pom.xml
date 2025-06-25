@@ -9,8 +9,8 @@
 
 	<properties>
 		<bouncycastle.version>1.74</bouncycastle.version>
-		<jdk.version>11</jdk.version>
-		<jdk.target.version>11</jdk.target.version>
+		<jdk.version>8</jdk.version>
+		<jdk.target.version>8</jdk.target.version>
 		<file.encoding>UTF-8</file.encoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
